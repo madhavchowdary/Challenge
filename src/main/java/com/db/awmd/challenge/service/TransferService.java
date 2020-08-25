@@ -55,8 +55,10 @@ public class TransferService {
 							try {
 		                    	
 		                    	logger.info("success path scenario ");
-		                        boolean fromact = update(fromAccount, transferAmount);
-		                        boolean toact = update(toAccount, transferAmount);
+		                    	BigDecimal debitAmt = accountFrom.getBalance().subtract(transferAmount);
+		                    	BigDecimal creditAmt = accountTo.getBalance().add(transferAmount);
+		                        boolean fromact = update(fromAccount, debitAmt);
+		                        boolean toact = update(toAccount, creditAmt);
 		                        
 		                        if(fromact && toact) {
 		                        	NotificationService notificationService = new EmailNotificationService();
