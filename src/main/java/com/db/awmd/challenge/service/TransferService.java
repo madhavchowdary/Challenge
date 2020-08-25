@@ -87,6 +87,6 @@ public class TransferService {
 	}
 	
 	public boolean update(String fromAccount, BigDecimal transferAmount){
-		return transferRepository.updateById(fromAccount, transferAmount);
+		return transferRepository.update(fromAccount, transferAmount);
 	}
 }

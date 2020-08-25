@@ -52,12 +52,9 @@ public class TransferRepositoryImpl implements TransferRepository {
 	  }
 	
 	@Override
-	public boolean updateById(String fromAccount, BigDecimal transferAmount) {
+	public boolean update(String fromAccount, BigDecimal transferAmount) {
 		
-		String sql = "UPDATE ACCOUNTS SET BALANCE=? WHERE ID = ?";
-		  Object[] params = { transferAmount, fromAccount };
-		  int[] types = {Types.DECIMAL, Types.INTEGER};
-		  int result = jdbcTemplate.update(sql, params, types);
+		  int result = jdbcTemplate.update("UPDATE ACCOUNTS " + "SET BALANCE=? " + "WHERE ID = ?", new Object[] {transferAmount, fromAccount});
 		
 		  if(result == 0) {
 			  return false;

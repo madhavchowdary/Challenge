@@ -12,6 +12,6 @@ public interface TransferRepository {
 	
 	public void createAccount(Account account) throws DuplicateAccountIdException;
 	public Account findById(String accountId);
-	public boolean updateById(String fromAccount, BigDecimal transferAmount);
+	public boolean update(String fromAccount, BigDecimal transferAmount);
 	
 }
