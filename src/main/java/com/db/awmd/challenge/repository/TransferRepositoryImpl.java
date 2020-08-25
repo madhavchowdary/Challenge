@@ -1,10 +1,13 @@
 package com.db.awmd.challenge.repository;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.Types;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.db.awmd.challenge.domain.Account;
@@ -40,8 +43,12 @@ public class TransferRepositoryImpl implements TransferRepository {
 	 */ 
 	@Override
 	  public Account findById(String accountId) {
-	    String sql = "SELECT * FROM ACCOUNTS WHERE ID=?";
-	    return (Account) jdbcTemplate.queryForObject(sql, new Object[] {accountId}, new AccountRowMapper());
+		try {
+			 String sql = "SELECT * FROM ACCOUNTS WHERE ID=?";
+			    return (Account) jdbcTemplate.queryForObject(sql, new Object[] {accountId}, new AccountRowMapper());
+		}catch(EmptyResultDataAccessException emp)  {
+			return null;
+		}
 	  }
 	
 	@Override
@@ -57,7 +64,6 @@ public class TransferRepositoryImpl implements TransferRepository {
 		  } else {
 			  return true;
 		  }
-		
 	}
 
 }

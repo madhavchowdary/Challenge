@@ -38,53 +38,52 @@ public class TransferService {
 	 */
 	public void amountTransfer(String fromAccount, String toAccount, BigDecimal transferAmount)
 			throws AmountTransferException {
-		
+
 		Account accountFrom = transferRepository.findById(fromAccount);
 		Account accountTo = transferRepository.findById(toAccount);
-		
-		final ReadWriteLock rwl = new ReentrantReadWriteLock();
-		
-		int res = accountFrom.getBalance().compareTo(transferAmount);
-		
-		if(Integer.parseInt(fromAccount) == Integer.parseInt(accountFrom.getAccountId())) {
-			if(res == 1) {
-				if(Integer.parseInt(toAccount) == Integer.parseInt(accountTo.getAccountId())) {
-					
-					rwl.readLock().lock();
-					
-							try {
-		                    	
-		                    	logger.info("success path scenario ");
-		                    	BigDecimal debitAmt = accountFrom.getBalance().subtract(transferAmount);
-		                    	BigDecimal creditAmt = accountTo.getBalance().add(transferAmount);
-		                        boolean fromact = update(fromAccount, debitAmt);
-		                        boolean toact = update(toAccount, creditAmt);
-		                        
-		                        if(fromact && toact) {
-		                        	NotificationService notificationService = new EmailNotificationService();
-			    					
-			    					String transferDescription = transferAmount +"debited from your account";
-			    					notificationService.notifyAboutTransfer(accountFrom, transferDescription);
 
-			    					String transferDescr = transferAmount + "credited to your account";
-			    					notificationService.notifyAboutTransfer(accountTo, transferDescr);
-		                        }
-		                        
-		                    } finally {
-		                    	rwl.readLock().unlock();
-		                    }
-	                    
-				}else {
+		if (accountFrom != null) {
+			int res = accountFrom.getBalance().compareTo(transferAmount);
+			if (res == 1) {
+				if (accountTo != null) {
+					
+					final ReadWriteLock rwl = new ReentrantReadWriteLock();
+
+					rwl.readLock().lock();
+
+					try {
+
+						logger.info("success path scenario ");
+						BigDecimal debitAmt = accountFrom.getBalance().subtract(transferAmount);
+						BigDecimal creditAmt = accountTo.getBalance().add(transferAmount);
+						boolean fromact = update(fromAccount, debitAmt);
+						boolean toact = update(toAccount, creditAmt);
+
+						if (fromact && toact) {
+							NotificationService notificationService = new EmailNotificationService();
+
+							String transferDescription = transferAmount + "debited from your account";
+							notificationService.notifyAboutTransfer(accountFrom, transferDescription);
+
+							String transferDescr = transferAmount + "credited to your account";
+							notificationService.notifyAboutTransfer(accountTo, transferDescr);
+						}
+
+					} finally {
+						rwl.readLock().unlock();
+					}
+
+				} else {
 					throw new AmountTransferException("To Account Number does not exist");
 				}
-				
-			}else {
-				throw new AmountTransferException ("Not having enough balance from account");
+
+			} else {
+				throw new AmountTransferException("Not having enough balance from account");
 			}
 		} else {
 			throw new AmountTransferException("From Account Number does not exist");
 		}
-		
+
 	}
 	
 	public boolean update(String fromAccount, BigDecimal transferAmount){

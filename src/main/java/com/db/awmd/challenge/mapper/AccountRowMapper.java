@@ -9,13 +9,10 @@ import com.db.awmd.challenge.domain.Account;
 public class AccountRowMapper implements RowMapper < Account > {
 
 	public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
-        
-		Account account = new Account(); 
-    	account.setAccountId(rs.getString("ID"));
-    	account.setBalance(BigDecimal.valueOf(Long.valueOf(rs.getString("BALANCE"))));
-        return account;
+		
+			Account account = new Account(); 
+	    	account.setAccountId(rs.getString("ID"));
+	    	account.setBalance(BigDecimal.valueOf(Long.valueOf(rs.getString("BALANCE"))));
+	        return account;
     }
-	
-	
-
 }
