@@ -1,17 +1,11 @@
 package com.db.awmd.challenge.repository;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Types;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.db.awmd.challenge.domain.Account;
-import com.db.awmd.challenge.exception.DuplicateAccountIdException;
 import com.db.awmd.challenge.mapper.AccountRowMapper;
 
 /**
@@ -24,20 +18,6 @@ public class TransferRepositoryImpl implements TransferRepository {
 	@Autowired
     JdbcTemplate jdbcTemplate;
 	
-	private final Map<String, Account> accounts = new ConcurrentHashMap<>();
-
-	  /**
-	 * Create Account
-	 */
-	@Override
-	  public void createAccount(Account account) throws DuplicateAccountIdException {
-	    Account previousAccount = accounts.putIfAbsent(account.getAccountId(), account);
-	    if (previousAccount != null) {
-	      throw new DuplicateAccountIdException(
-	        "Account id " + account.getAccountId() + " already exists!");
-	    }
-	  } 
-
 	  /**
 	 * returns Account
 	 */ 
