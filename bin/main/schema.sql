@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS ACCOUNTS;
+  
+CREATE TABLE ACCOUNTS (
+  id int PRIMARY KEY,
+  balance int);
